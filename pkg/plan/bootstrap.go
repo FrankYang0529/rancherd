@@ -3,7 +3,6 @@ package plan
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/rancher/system-agent/pkg/applyinator"
 
@@ -55,15 +54,21 @@ func toJoinPlan(cfg *config.Config, dataDir string) (*applyinator.Plan, error) {
 	if err := plan.addFile(cacerts.ToFile(cfg.Server, cfg.Token)); err != nil {
 		return nil, err
 	}
-	if err := plan.addFile(join.ToScriptFile(cfg, dataDir)); err != nil {
+	if err := plan.addFile(join.ToInstallRKE2File(cfg)); err != nil {
 		return nil, err
 	}
+	// if err := plan.addFile(join.ToScriptFile(cfg, dataDir)); err != nil {
+	// 	return nil, err
+	// }
 	if err := plan.addInstruction(cacerts.ToUpdateCACertificatesInstruction()); err != nil {
 		return nil, err
 	}
-	if err := plan.addInstruction(join.ToInstruction(cfg, dataDir)); err != nil {
+	if err := plan.addInstruction(join.ToInstallRKE2AgentInstruction(cfg)); err != nil {
 		return nil, err
 	}
+	// if err := plan.addInstruction(join.ToInstruction(cfg, dataDir)); err != nil {
+	// 	return nil, err
+	// }
 	if err := plan.addInstruction(probe.ToInstruction()); err != nil {
 		return nil, err
 	}
@@ -115,32 +120,32 @@ func (p *plan) addInstructions(cfg *config.Config, dataDir string) error {
 		return err
 	}
 
-	if err := p.addInstruction(rancher.ToWaitClusterClientSecretInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-		return err
-	}
+	// if err := p.addInstruction(rancher.ToWaitClusterClientSecretInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 	return err
+	// }
 
-	if err := p.addInstruction(rancher.ToScaleDownFleetControllerInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-		return err
-	}
+	// if err := p.addInstruction(rancher.ToScaleDownFleetControllerInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 	return err
+	// }
 
-	if err := p.addInstruction(rancher.ToUpdateClientSecretInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-		return err
-	}
+	// if err := p.addInstruction(rancher.ToUpdateClientSecretInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 	return err
+	// }
 
-	if err := p.addInstruction(rancher.ToScaleUpFleetControllerInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-		return err
-	}
+	// if err := p.addInstruction(rancher.ToScaleUpFleetControllerInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 	return err
+	// }
 
 	if err := p.addInstruction(resources.ToInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion, dataDir)); err != nil {
 		return err
 	}
 
 	// currently instruction is only needed for v2.8.x
-	if strings.HasPrefix(cfg.RancherVersion, "v2.8") {
-		if err := p.addInstruction(rancher.PatchLocalProvisioningClusterStatus(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-			return err
-		}
-	}
+	// if strings.HasPrefix(cfg.RancherVersion, "v2.8") {
+	// 	if err := p.addInstruction(rancher.PatchLocalProvisioningClusterStatus(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 		return err
+	// 	}
+	// }
 
 	if err := p.addInstruction(rancher.ToWaitSUCInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
 		return err
@@ -150,9 +155,9 @@ func (p *plan) addInstructions(cfg *config.Config, dataDir string) error {
 		return err
 	}
 
-	if err := p.addInstruction(runtime.ToWaitKubernetesInstruction(cfg.RuntimeInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-		return err
-	}
+	// if err := p.addInstruction(runtime.ToWaitKubernetesInstruction(cfg.RuntimeInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 	return err
+	// }
 
 	p.addPrePostInstructions(cfg, k8sVersion)
 	return nil
