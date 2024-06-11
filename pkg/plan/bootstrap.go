@@ -43,7 +43,7 @@ func toInitPlan(config *config.Config, dataDir string) (*applyinator.Plan, error
 	return (*applyinator.Plan)(&plan), nil
 }
 
-func toJoinPlan(cfg *config.Config, dataDir string) (*applyinator.Plan, error) {
+func toJoinPlan(cfg *config.Config, _ string) (*applyinator.Plan, error) {
 	if cfg.Server == "" {
 		return nil, fmt.Errorf("server is required in config for all roles besides cluster-init")
 	}
@@ -55,15 +55,21 @@ func toJoinPlan(cfg *config.Config, dataDir string) (*applyinator.Plan, error) {
 	if err := plan.addFile(cacerts.ToFile(cfg.Server, cfg.Token)); err != nil {
 		return nil, err
 	}
-	if err := plan.addFile(join.ToScriptFile(cfg, dataDir)); err != nil {
+	if err := plan.addFile(join.ToInstallRKE2File(cfg)); err != nil {
 		return nil, err
 	}
+	// if err := plan.addFile(join.ToScriptFile(cfg, dataDir)); err != nil {
+	// 	return nil, err
+	// }
 	if err := plan.addInstruction(cacerts.ToUpdateCACertificatesInstruction()); err != nil {
 		return nil, err
 	}
-	if err := plan.addInstruction(join.ToInstruction(cfg, dataDir)); err != nil {
+	if err := plan.addInstruction(join.ToInstallRKE2AgentInstruction(cfg)); err != nil {
 		return nil, err
 	}
+	// if err := plan.addInstruction(join.ToInstruction(cfg, dataDir)); err != nil {
+	// 	return nil, err
+	// }
 	if err := plan.addInstruction(probe.ToInstruction()); err != nil {
 		return nil, err
 	}
@@ -115,21 +121,21 @@ func (p *plan) addInstructions(cfg *config.Config, dataDir string) error {
 		return err
 	}
 
-	if err := p.addInstruction(rancher.ToWaitClusterClientSecretInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-		return err
-	}
+	// if err := p.addInstruction(rancher.ToWaitClusterClientSecretInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 	return err
+	// }
 
-	if err := p.addInstruction(rancher.ToScaleDownFleetControllerInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-		return err
-	}
+	// if err := p.addInstruction(rancher.ToScaleDownFleetControllerInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 	return err
+	// }
 
-	if err := p.addInstruction(rancher.ToUpdateClientSecretInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-		return err
-	}
+	// if err := p.addInstruction(rancher.ToUpdateClientSecretInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 	return err
+	// }
 
-	if err := p.addInstruction(rancher.ToScaleUpFleetControllerInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-		return err
-	}
+	// if err := p.addInstruction(rancher.ToScaleUpFleetControllerInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 	return err
+	// }
 
 	// Above Rancher v2.9.x, we cannot patch provisioing cluster with empty rkeConfig,
 	// so we need to delete the webhook validation configuration.
@@ -144,11 +150,11 @@ func (p *plan) addInstructions(cfg *config.Config, dataDir string) error {
 	}
 
 	// currently instruction is needed for version above v2.8.x
-	if semver.Compare(cfg.RancherVersion, "v2.8.0") >= 0 {
-		if err := p.addInstruction(rancher.PatchLocalProvisioningClusterStatus(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-			return err
-		}
-	}
+	// if semver.Compare(cfg.RancherVersion, "v2.8.0") >= 0 {
+	// 	if err := p.addInstruction(rancher.PatchLocalProvisioningClusterStatus(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 		return err
+	// 	}
+	// }
 
 	if semver.Compare(cfg.RancherVersion, "v2.9.0") >= 0 {
 		if err := p.addInstruction(rancher.ToRestartRancherWebhookInstruction(k8sVersion)); err != nil {
@@ -164,9 +170,9 @@ func (p *plan) addInstructions(cfg *config.Config, dataDir string) error {
 		return err
 	}
 
-	if err := p.addInstruction(runtime.ToWaitKubernetesInstruction(cfg.RuntimeInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
-		return err
-	}
+	// if err := p.addInstruction(runtime.ToWaitKubernetesInstruction(cfg.RuntimeInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	// 	return err
+	// }
 
 	p.addPrePostInstructions(cfg, k8sVersion)
 	return nil
