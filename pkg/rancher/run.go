@@ -53,7 +53,7 @@ func ToInstruction(imageOverride, systemDefaultRegistry, k8sVersion, rancherVers
 	}, nil
 }
 
-func ToUpgradeInstruction(imageOverride, systemDefaultRegistry, k8sVersion, rancherVersion, dataDir string) (*applyinator.Instruction, error) {
+func ToUpgradeInstruction(imageOverride, systemDefaultRegistry, k8sVersion, rancherVersion, _ string) (*applyinator.Instruction, error) {
 	return &applyinator.Instruction{
 		Name:       "rancher",
 		SaveOutput: true,

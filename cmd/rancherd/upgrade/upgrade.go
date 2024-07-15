@@ -19,7 +19,7 @@ type Upgrade struct {
 	Force             bool   `usage:"Run without prompting for confirmation" short:"f"`
 }
 
-func (b *Upgrade) Run(cmd *cobra.Command, args []string) error {
+func (b *Upgrade) Run(cmd *cobra.Command, _ []string) error {
 	r := rancherd.New(rancherd.Config{
 		Force:      b.Force,
 		DataDir:    rancherd.DefaultDataDir,

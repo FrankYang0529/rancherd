@@ -18,7 +18,7 @@ type GetToken struct {
 	Kubeconfig string `usage:"Kubeconfig file" env:"KUBECONFIG"`
 }
 
-func (p *GetToken) Run(cmd *cobra.Command, args []string) error {
+func (p *GetToken) Run(cmd *cobra.Command, _ []string) error {
 	str, err := token.GetToken(cmd.Context(), p.Kubeconfig)
 	if err != nil {
 		return err

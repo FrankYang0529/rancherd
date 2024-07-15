@@ -18,7 +18,7 @@ type Bootstrap struct {
 	//Config string `usage:"Custom config path" default:"/etc/rancher/rancherd/config.yaml" short:"c"`
 }
 
-func (b *Bootstrap) Run(cmd *cobra.Command, args []string) error {
+func (b *Bootstrap) Run(cmd *cobra.Command, _ []string) error {
 	r := rancherd.New(rancherd.Config{
 		Force:      b.Force,
 		DataDir:    rancherd.DefaultDataDir,
