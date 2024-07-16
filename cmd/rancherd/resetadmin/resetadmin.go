@@ -18,7 +18,7 @@ type ResetAdmin struct {
 	Kubeconfig   string `usage:"Kubeconfig file" env:"KUBECONFIG"`
 }
 
-func (p *ResetAdmin) Run(cmd *cobra.Command, args []string) error {
+func (p *ResetAdmin) Run(cmd *cobra.Command, _ []string) error {
 	return auth.ResetAdmin(cmd.Context(), &auth.Options{
 		Password:     p.Password,
 		PasswordFile: p.PasswordFile,

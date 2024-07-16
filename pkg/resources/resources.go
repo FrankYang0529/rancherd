@@ -37,8 +37,7 @@ func writeCattleID(id string) error {
 
 func getCattleID() (string, error) {
 	data, err := ioutil.ReadFile("/etc/rancher/agent/cattle-id")
-	if os.IsNotExist(err) {
-	} else if err != nil {
+	if err != nil && !os.IsNotExist(err) {
 		return "", err
 	}
 	id := strings.TrimSpace(string(data))

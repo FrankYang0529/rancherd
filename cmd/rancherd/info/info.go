@@ -15,7 +15,7 @@ func NewInfo() *cobra.Command {
 type Info struct {
 }
 
-func (b *Info) Run(cmd *cobra.Command, args []string) error {
+func (b *Info) Run(cmd *cobra.Command, _ []string) error {
 	r := rancherd.New(rancherd.Config{
 		DataDir:    rancherd.DefaultDataDir,
 		ConfigPath: rancherd.DefaultConfigFile,

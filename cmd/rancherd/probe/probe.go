@@ -21,7 +21,7 @@ type Probe struct {
 	File     string `usage:"Plan file" default:"/var/lib/rancher/rancherd/plan/plan.json" short:"f"`
 }
 
-func (p *Probe) Run(cmd *cobra.Command, args []string) error {
+func (p *Probe) Run(cmd *cobra.Command, _ []string) error {
 	interval, err := time.ParseDuration(p.Interval)
 	if err != nil {
 		return fmt.Errorf("parsing duration %s: %w", p.Interval, err)

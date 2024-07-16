@@ -10,7 +10,7 @@ import (
 	"github.com/rancher/rancherd/pkg/self"
 )
 
-func ToWaitRancherInstruction(imageOverride, systemDefaultRegistry, k8sVersion string) (*applyinator.Instruction, error) {
+func ToWaitRancherInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
@@ -24,7 +24,7 @@ func ToWaitRancherInstruction(imageOverride, systemDefaultRegistry, k8sVersion s
 	}, nil
 }
 
-func ToWaitRancherWebhookInstruction(imageOverride, systemDefaultRegistry, k8sVersion string) (*applyinator.Instruction, error) {
+func ToWaitRancherWebhookInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
@@ -38,7 +38,7 @@ func ToWaitRancherWebhookInstruction(imageOverride, systemDefaultRegistry, k8sVe
 	}, nil
 }
 
-func ToWaitSUCInstruction(imageOverride, systemDefaultRegistry, k8sVersion string) (*applyinator.Instruction, error) {
+func ToWaitSUCInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
@@ -52,7 +52,7 @@ func ToWaitSUCInstruction(imageOverride, systemDefaultRegistry, k8sVersion strin
 	}, nil
 }
 
-func ToWaitSUCPlanInstruction(imageOverride, systemDefaultRegistry, k8sVersion string) (*applyinator.Instruction, error) {
+func ToWaitSUCPlanInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
@@ -67,7 +67,7 @@ func ToWaitSUCPlanInstruction(imageOverride, systemDefaultRegistry, k8sVersion s
 	}, nil
 }
 
-func ToWaitClusterClientSecretInstruction(imageOverride, systemDefaultRegistry, k8sVersion string) (*applyinator.Instruction, error) {
+func ToWaitClusterClientSecretInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
@@ -82,7 +82,7 @@ func ToWaitClusterClientSecretInstruction(imageOverride, systemDefaultRegistry, 
 	}, nil
 }
 
-func ToUpdateClientSecretInstruction(imageOverride, systemDefaultRegistry, k8sVersion string) (*applyinator.Instruction, error) {
+func ToUpdateClientSecretInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
@@ -96,7 +96,7 @@ func ToUpdateClientSecretInstruction(imageOverride, systemDefaultRegistry, k8sVe
 	}, nil
 }
 
-func ToScaleDownFleetControllerInstruction(imageOverride, systemDefaultRegistry, k8sVersion string) (*applyinator.Instruction, error) {
+func ToScaleDownFleetControllerInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
@@ -110,7 +110,7 @@ func ToScaleDownFleetControllerInstruction(imageOverride, systemDefaultRegistry,
 	}, nil
 }
 
-func ToScaleUpFleetControllerInstruction(imageOverride, systemDefaultRegistry, k8sVersion string) (*applyinator.Instruction, error) {
+func ToScaleUpFleetControllerInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
@@ -126,7 +126,7 @@ func ToScaleUpFleetControllerInstruction(imageOverride, systemDefaultRegistry, k
 
 // Needs to patch status subresource
 // k patch cluster.provisioning local -n fleet-local --subresource=status --type=merge --patch '{"status":{"fleetWorkspaceName": "fleet-local"}}'
-func PatchLocalProvisioningClusterStatus(imageOverride, systemDefaultRegistry, k8sVersion string) (*applyinator.Instruction, error) {
+func PatchLocalProvisioningClusterStatus(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)

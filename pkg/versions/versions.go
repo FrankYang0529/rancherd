@@ -17,7 +17,7 @@ var (
 	cachedRancherVersion = map[string]string{}
 	cachedLock           sync.Mutex
 	redirectClient       = &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+		CheckRedirect: func(*http.Request, []*http.Request) error {
 			return http.ErrUseLastResponse
 		},
 	}

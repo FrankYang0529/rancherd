@@ -9,7 +9,7 @@ import (
 	"github.com/rancher/system-agent/pkg/applyinator"
 )
 
-func ToWaitKubernetesInstruction(imageOverride, systemDefaultRegistry, k8sVersion string) (*applyinator.Instruction, error) {
+func ToWaitKubernetesInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)

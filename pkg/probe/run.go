@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func RunProbes(ctx context.Context, planFile string, interval time.Duration) error {
+func RunProbes(_ context.Context, planFile string, interval time.Duration) error {
 	f, err := os.Open(planFile)
 	if err != nil {
 		return fmt.Errorf("opening plan %s: %w", planFile, err)

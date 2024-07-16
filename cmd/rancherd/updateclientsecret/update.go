@@ -17,6 +17,6 @@ type UpdateClientSecret struct {
 	Kubeconfig string `usage:"Kubeconfig file" env:"KUBECONFIG"`
 }
 
-func (s *UpdateClientSecret) Run(cmd *cobra.Command, args []string) error {
+func (s *UpdateClientSecret) Run(cmd *cobra.Command, _ []string) error {
 	return rancher.UpdateClientSecret(cmd.Context(), &rancher.Options{Kubeconfig: s.Kubeconfig})
 }

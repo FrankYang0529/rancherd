@@ -18,7 +18,7 @@ func NewGetTPMHash() *cobra.Command {
 type GetTPMHash struct {
 }
 
-func (p *GetTPMHash) Run(cmd *cobra.Command, args []string) error {
+func (p *GetTPMHash) Run(*cobra.Command, []string) error {
 	str, err := tpm.GetPubHash()
 	if err != nil {
 		return err

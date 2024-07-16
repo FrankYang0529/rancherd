@@ -311,7 +311,7 @@ func (j *joinServer) setPeers(peers []string) []string {
 	return j.peers
 }
 
-func (j *joinServer) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+func (j *joinServer) ServeHTTP(rw http.ResponseWriter, _ *http.Request) {
 	j.lock.Lock()
 	defer j.lock.Unlock()
 
