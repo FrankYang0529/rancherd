@@ -107,9 +107,8 @@ func ToBootstrapFile(config *config.Config, path string) (*applyinator.File, err
 			},
 			"spec": map[string]interface{}{
 				"kubernetesVersion": k8sVersion,
-				"rkeConfig": map[string]interface{}{
-					"controlPlaneConfig": config.ConfigValues,
-				},
+				// Rancher needs a non-null rkeConfig to apply system-upgrade-controller managed chart.
+				"rkeConfig": map[string]interface{}{},
 			},
 		},
 	}, v1.GenericMap{
