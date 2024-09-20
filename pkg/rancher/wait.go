@@ -124,6 +124,34 @@ func ToScaleUpFleetControllerInstruction(_, _, k8sVersion string) (*applyinator.
 	}, nil
 }
 
+func ToDeleteRancherWebhookValidationConfiguration(k8sVersion string) (*applyinator.Instruction, error) {
+	cmd, err := self.Self()
+	if err != nil {
+		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
+	}
+	return &applyinator.Instruction{
+		Name:       "delete-rancher-webhook-validation-configuration",
+		SaveOutput: true,
+		Args:       []string{"retry", kubectl.Command(k8sVersion), "delete", "validatingwebhookconfiguration", "rancher.cattle.io"},
+		Env:        kubectl.Env(k8sVersion),
+		Command:    cmd,
+	}, nil
+}
+
+func ToRestartRancherWebhookInstruction(k8sVersion string) (*applyinator.Instruction, error) {
+	cmd, err := self.Self()
+	if err != nil {
+		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
+	}
+	return &applyinator.Instruction{
+		Name:       "wait-rancher-webhook",
+		SaveOutput: true,
+		Args:       []string{"retry", kubectl.Command(k8sVersion), "-n", "cattle-system", "rollout", "restart", "deploy/rancher-webhook"},
+		Env:        kubectl.Env(k8sVersion),
+		Command:    cmd,
+	}, nil
+}
+
 // Needs to patch status subresource
 // k patch cluster.provisioning local -n fleet-local --subresource=status --type=merge --patch '{"status":{"fleetWorkspaceName": "fleet-local"}}'
 func PatchLocalProvisioningClusterStatus(_, _, k8sVersion string) (*applyinator.Instruction, error) {
@@ -132,7 +160,7 @@ func PatchLocalProvisioningClusterStatus(_, _, k8sVersion string) (*applyinator.
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
 	}
 	return &applyinator.Instruction{
-		Name:       "wait-suc-plan-resolved",
+		Name:       "patch-provisioning-cluster-status",
 		SaveOutput: true,
 		Args:       []string{"retry", kubectl.Command(k8sVersion), "-n", "fleet-local", "patch", "cluster.provisioning", "local", "--subresource=status", "--type=merge", "--patch", "{\"status\":{\"fleetWorkspaceName\": \"fleet-local\"}}"},
 		Env:        kubectl.Env(k8sVersion),

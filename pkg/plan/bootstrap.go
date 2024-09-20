@@ -3,9 +3,9 @@ package plan
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/rancher/system-agent/pkg/applyinator"
+	"golang.org/x/mod/semver"
 
 	"github.com/rancher/rancherd/pkg/cacerts"
 	"github.com/rancher/rancherd/pkg/config"
@@ -131,13 +131,27 @@ func (p *plan) addInstructions(cfg *config.Config, dataDir string) error {
 		return err
 	}
 
+	// Above Rancher v2.9.x, we cannot patch provisioing cluster with empty rkeConfig,
+	// so we need to delete the webhook validation configuration.
+	if semver.Compare(cfg.RancherVersion, "v2.9.0") >= 0 {
+		if err := p.addInstruction(rancher.ToDeleteRancherWebhookValidationConfiguration(k8sVersion)); err != nil {
+			return err
+		}
+	}
+
 	if err := p.addInstruction(resources.ToInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion, dataDir)); err != nil {
 		return err
 	}
 
-	// currently instruction is only needed for v2.8.x
-	if strings.HasPrefix(cfg.RancherVersion, "v2.8") {
+	// currently instruction is needed for version above v2.8.x
+	if semver.Compare(cfg.RancherVersion, "v2.8.0") >= 0 {
 		if err := p.addInstruction(rancher.PatchLocalProvisioningClusterStatus(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+			return err
+		}
+	}
+
+	if semver.Compare(cfg.RancherVersion, "v2.9.0") >= 0 {
+		if err := p.addInstruction(rancher.ToRestartRancherWebhookInstruction(k8sVersion)); err != nil {
 			return err
 		}
 	}
