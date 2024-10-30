@@ -125,32 +125,6 @@ func ToBootstrapFile(config *config.Config, path string) (*applyinator.File, err
 				"agentToken":  []byte(token),
 			},
 		},
-	}, v1.GenericMap{
-		Data: map[string]interface{}{
-			"kind":       "ClusterRegistrationToken",
-			"apiVersion": "management.cattle.io/v3",
-			"metadata": map[string]interface{}{
-				"name":      "default-token",
-				"namespace": "local",
-			},
-			"spec": map[string]interface{}{
-				"clusterName": "local",
-			},
-			"status": map[string]interface{}{
-				"token": token,
-			},
-		},
-	}, v1.GenericMap{
-		Data: map[string]interface{}{
-			"apiVersion": "catalog.cattle.io/v1",
-			"kind":       "ClusterRepo",
-			"metadata": map[string]interface{}{
-				"name": "rancher-stable",
-			},
-			"spec": map[string]interface{}{
-				"url": "https://releases.rancher.com/server-charts/stable",
-			},
-		},
 	}), path)
 }
 func ToFile(resources []v1.GenericMap, path string) (*applyinator.File, error) {
