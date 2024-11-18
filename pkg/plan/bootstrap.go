@@ -165,7 +165,11 @@ func (p *plan) addInstructions(cfg *config.Config, dataDir string) error {
 		return err
 	}
 
-	if err := p.addInstruction(rancher.ToWaitSUCPlanInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
+	if err := p.addInstruction(resources.ToSystemAgentUpgraderInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion, dataDir)); err != nil {
+		return err
+	}
+
+	if err := p.addInstruction(rancher.ToWaitSystemAgentUpgraderPlanInstruction(cfg.RancherInstallerImage, cfg.SystemDefaultRegistry, k8sVersion)); err != nil {
 		return err
 	}
 
@@ -231,6 +235,11 @@ func (p *plan) addFiles(cfg *config.Config, dataDir string) error {
 
 	// bootstrap manifests
 	if err := p.addFile(resources.ToBootstrapFile(cfg, resources.GetBootstrapManifests(dataDir))); err != nil {
+		return err
+	}
+
+	// system-agent-upgrader manifests
+	if err := p.addFile(resources.ToSystemAgentUpgraderFile(resources.GetSystemAgentUpgraderManifests(dataDir))); err != nil {
 		return err
 	}
 

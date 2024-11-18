@@ -169,3 +169,76 @@ func ToInstruction(imageOverride, systemDefaultRegistry, k8sVersion, dataDir str
 		Env:        kubectl.Env(k8sVersion),
 	}, nil
 }
+
+func ToSystemAgentUpgraderFile(path string) (*applyinator.File, error) {
+	return ToFile([]v1.GenericMap{
+		{
+			Data: map[string]interface{}{
+				"apiVersion": "upgrade.cattle.io/v1",
+				"kind":       "Plan",
+				"metadata": map[string]interface{}{
+					"name":      "system-agent-upgrader",
+					"namespace": "cattle-system",
+				},
+				"spec": map[string]interface{}{
+					"concurrency": 10,
+					"nodeSelector": map[string]interface{}{
+						"matchExpressions": []map[string]interface{}{
+							{
+								"key":      "kubernetes.io/os",
+								"operator": "In",
+								"values": []string{
+									"linux",
+								},
+							},
+						},
+					},
+					"serviceAccountName": "system-upgrade-controller",
+					"tolerations": []map[string]interface{}{
+						{
+							"operator": "Exists",
+						},
+					},
+					"upgrade": map[string]interface{}{
+						"envs": []map[string]interface{}{
+							{
+								"name":  "CATTLE_AGENT_LOGLEVEL",
+								"value": "debug",
+							},
+							{
+								"name":  "CATTLE_REMOTE_ENABLED",
+								"value": "false",
+							},
+							{
+								"name":  "CATTLE_LOCAL_ENABLED",
+								"value": "true",
+							},
+						},
+						"image": "rancher/system-agent",
+					},
+					"version": "v0.3.9-suc",
+				},
+			},
+		},
+	}, path)
+}
+
+func GetSystemAgentUpgraderManifests(dataDir string) string {
+	return fmt.Sprintf("%s/bootstrapmanifests/system-agent-upgrader.yaml", dataDir)
+}
+
+func ToSystemAgentUpgraderInstruction(imageOverride, systemDefaultRegistry, k8sVersion, dataDir string) (*applyinator.Instruction, error) {
+	systemAgentUpgrader := GetSystemAgentUpgraderManifests(dataDir)
+	cmd, err := self.Self()
+	if err != nil {
+		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
+	}
+	return &applyinator.Instruction{
+		Name:       "system-agent-upgrader",
+		SaveOutput: true,
+		Image:      images.GetInstallerImage(imageOverride, systemDefaultRegistry, k8sVersion),
+		Args:       []string{"retry", kubectl.Command(k8sVersion), "apply", "--validate=false", "-f", systemAgentUpgrader},
+		Command:    cmd,
+		Env:        kubectl.Env(k8sVersion),
+	}, nil
+}

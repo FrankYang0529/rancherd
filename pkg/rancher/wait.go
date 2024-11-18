@@ -52,7 +52,7 @@ func ToWaitSUCInstruction(_, _, k8sVersion string) (*applyinator.Instruction, er
 	}, nil
 }
 
-func ToWaitSUCPlanInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
+func ToWaitSystemAgentUpgraderPlanInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {
 		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
