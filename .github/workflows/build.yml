@@ -24,11 +24,9 @@ jobs:
       run: dapper ci
 
     - name: Release
-      uses: softprops/action-gh-release@v2
       if: startsWith(github.ref, 'refs/tags/')
-      with:
-        files: |
-          dist/artifacts/rancherd-amd64
-          dist/artifacts/rancherd-arm64
-          dist/artifacts/sha256sum-amd64.txt
-          dist/artifacts/sha256sum-arm64.txt
+      run: |
+        gh release upload ${{ github.ref_name }} dist/artifacts/rancherd-amd64
+        gh release upload ${{ github.ref_name }} dist/artifacts/rancherd-arm64
+        gh release upload ${{ github.ref_name }} dist/artifacts/sha256sum-amd64.txt
+        gh release upload ${{ github.ref_name }} dist/artifacts/sha256sum-arm64.txt
