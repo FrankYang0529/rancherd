@@ -10,6 +10,20 @@ import (
 	"github.com/harvester/rancherd/pkg/self"
 )
 
+func ToCreateFleetDefaultNamespace(_, _, k8sVersion string) (*applyinator.Instruction, error) {
+	cmd, err := self.Self()
+	if err != nil {
+		return nil, fmt.Errorf("resolving location of %s: %w", os.Args[0], err)
+	}
+	return &applyinator.Instruction{
+		Name:       "wait-rancher",
+		SaveOutput: true,
+		Args:       []string{"retry", kubectl.Command(k8sVersion), "create", "namespace", "fleet-default"},
+		Env:        kubectl.Env(k8sVersion),
+		Command:    cmd,
+	}, nil
+}
+
 func ToWaitRancherInstruction(_, _, k8sVersion string) (*applyinator.Instruction, error) {
 	cmd, err := self.Self()
 	if err != nil {

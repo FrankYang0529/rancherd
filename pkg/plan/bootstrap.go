@@ -99,6 +99,10 @@ func (p *plan) addInstructions(cfg *config.Config, dataDir string) error {
 		return err
 	}
 
+	if err := p.addInstruction(rancher.ToCreateFleetDefaultNamespace(k8sVersion)); err != nil {
+		return err
+	}
+
 	rancherVersion, err := versions.RancherVersion(cfg.RancherVersion)
 	if err != nil {
 		return err
